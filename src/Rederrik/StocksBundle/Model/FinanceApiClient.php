@@ -144,7 +144,8 @@ class FinanceApiClient
         $clauseString = "(startDate='%s' and endDate='%s' and symbol = '%s')";
         $clause = [];
         foreach ($stocksToFetch as $symbol => $dates) {
-            $clause[] = sprintf($clauseString, $dates['start'], $dates['end'], $symbol);
+            $clause[] = sprintf($clauseString,
+                $dates['start']->format("Y-m-d"), $dates['end']->format("Y-m-d"), $symbol);
         }
         $query = "select * from yahoo.finance.historicaldata where ".implode(' or ',$clause);
         $result = $this->execQuery($query);
