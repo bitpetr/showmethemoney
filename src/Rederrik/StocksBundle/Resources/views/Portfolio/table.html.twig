@@ -27,7 +27,7 @@
             <td>{{ quote.symbol }}</td>
             <td>{{ quote.companyName }}</td>
             <td><i class="dollar icon">{{ quote.lastTradePrice|number_format(2) }}</i></td>
-            <td>{{ quote.changeInPercent|raw }}</td>
+            <td>{{ quote.changeInPercent }}</td>
             <td>
                 <button class="ui icon tiny stock-remove button" data-id="{{ quote.id }}">
                     <i class="delete icon"></i> Remove
