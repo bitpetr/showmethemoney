@@ -1,5 +1,6 @@
 {
     "name": "rederrik/showmethemoney",
+    "description": "Stock protfolio web application using Symfony2",
     "license": "proprietary",
     "type": "project",
     "autoload": {
