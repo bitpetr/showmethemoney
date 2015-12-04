@@ -13,8 +13,7 @@ It took me about 4 hours to make the user interface part, ~3 hours for portfolio
 
 ## Installation
 ```bash
-git clone https://github.com/rederrik/showmethemoney.git
-cd showmethemoney
+git clone https://github.com/rederrik/showmethemoney.git .
 composer install
 php app/console doctrine:schema:create
 php app/console assetic:dump -e prod
