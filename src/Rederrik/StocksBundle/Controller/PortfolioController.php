@@ -51,7 +51,7 @@ class PortfolioController extends Controller
     public function addStockBySymbolAction(Request $request)
     {
         $symbol = $request->request->get('symbol');
-        if (!$symbol || strlen($symbol) > 10) { //@todo better validation
+        if (!$symbol || strlen($symbol) > 10) {
            return new JsonResponse(['error' => 'Wrong quote symbol'], 400);
         }
 
