@@ -77,7 +77,7 @@ class FinanceApiClient
         */
         do {
             $endDate = clone $startDate;
-            if (($days = $startDate->diff($yesterday)->days) > $this->maxDays) {
+            if ($startDate->diff($yesterday)->days > $this->maxDays) {
                 //Too many days - split! Btw, trades only happen on workdays so we take 200 calendar days
                 $endDate->modify($this->maxDays.' days');
             } else {
@@ -95,7 +95,7 @@ class FinanceApiClient
                 }
             }
 
-            if ($days*count($stocksToFetch) > $this->maxDays) {
+            if ($startDate->diff($endDate)->days*count($stocksToFetch) > $this->maxDays) {
                 foreach ($stocksToFetch as $symbol => $dates) { //Too many queries - one query for each stock
                     $res = $this->getHistoricalData([$symbol], $dates['start'], $dates['end']);
                     foreach ($res as $row) { //Format
