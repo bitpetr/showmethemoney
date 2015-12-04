@@ -2,6 +2,12 @@
  * Created by davydov on 02.12.2015.
  */
 $(function(){
+    var error = function(message){
+        var $error = $('#error');
+        $error.find('.body').html(message||'Error has occurred. Please try again later.');
+        $error.transition('show');
+    };
+
     var addStock = function (e) {
         if (e.keyCode !== 13) {
             return;
@@ -14,6 +20,7 @@ $(function(){
             success: function (res) {
                 var result = res.result;
                 if (result == undefined) {
+                    error(res.error)
                     return;
                 }
                 $('#portfolio-container').find('tbody').append(
@@ -23,6 +30,9 @@ $(function(){
                     '<i class="delete icon"></i> Remove</button></td></tr>'
                 );
                 updateGraph();
+            },
+            error: function(err) {
+                error(err.responseText)
             }
         });
     };
@@ -34,6 +44,7 @@ $(function(){
             data: {'id': $(this).data('id')},
             success: function (res) {
                 if (res.result == undefined || res.result.id == undefined) {
+                    error(res.error);
                     return;
                 }
                 $('#stock-row-'+res.result.id).remove();
@@ -43,8 +54,12 @@ $(function(){
     };
 
     var loadGraph = function(data) {
+        var $container = $("#graph-container");
         if(data.result == undefined || data.result.labels.length == 0) {
+            $container.transition('hide');
             return;
+        } else {
+            $container.transition('show');
         }
         var $graph = $("#graph");
         var width = $graph.parent().attr('width');
@@ -55,11 +70,11 @@ $(function(){
         data.result.datasets[0].pointStrokeColor = "#fff";
         data.result.datasets[0].pointHighlightFill = "#fff";
         data.result.datasets[0].pointHighlightStroke = "rgba(151,187,205,1)";
-        graph = new Chart(ctx).Line(data.result, {
+        var graph = new Chart(ctx).Line(data.result, {
             responsive: true,
             tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %> USD"
         });
-        $("#graph-container").removeClass('loading');
+        $container.removeClass('loading');
     };
 
     var updateGraph = function(){
@@ -75,4 +90,12 @@ $(function(){
     $('#portfolio-container')
         .on('keyup', '#quote-add', addStock)
         .on('click', '.stock-remove', removeStock);
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        })
+    ;
 });

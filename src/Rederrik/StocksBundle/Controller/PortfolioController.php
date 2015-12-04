@@ -64,13 +64,13 @@ class PortfolioController extends Controller
         $stocks = $this->get('rederrik_stocks.stock_provider')->getStock(strtoupper($symbol));
 
         if (empty($stocks)) {
-            return new JsonResponse(['error' => 'Stock not found.'], 400);
+            return new JsonResponse(['error' => 'Stock not found.']);
         }
 
         $portfolio = $user->getPortfolio();
         $stock = array_pop($stocks); //always an array, but we only use one value
         if ($portfolio->contains($stock)) {
-            return new JsonResponse(['error' => 'Stock already added to your portfolio.'], 400);
+            return new JsonResponse(['error' => 'Stock already added to your portfolio.']);
         }
         $user->addToPortfolio($stock);
 
@@ -101,12 +101,12 @@ class PortfolioController extends Controller
         $em = $this->getDoctrine()->getManager();
         $stock = $em->find('RederrikStocksBundle:Stock', $id);
         if (!$stock) {
-            return new JsonResponse(['error' => 'Stock not found.'], 400);
+            return new JsonResponse(['error' => 'Stock not found.']);
         }
 
         $portfolio = $user->getPortfolio();
         if (!$portfolio->removeElement($stock)) {
-            return new JsonResponse(['error' => 'Stock not found in your portfolio.'], 400);
+            return new JsonResponse(['error' => 'Stock not found in your portfolio.']);
         }
         $em->flush();
         return new JsonResponse(['result' => ['id' => $stock->getId()]]);

@@ -5,6 +5,14 @@
 {% endblock %}
 {% block content %}
     {% if is_granted('ROLE_USER') %}
+        <div id="error" class="ui negative message transition hidden">
+            <i class="close icon"></i>
+            <div class="header">
+                Error
+            </div>
+            <p class="body">That offer has expired
+            </p>
+        </div>
         <div class="row">
             <div id="portfolio-container" class="column">
                 {{ render_hinclude(url('portfolio_table')) }}
