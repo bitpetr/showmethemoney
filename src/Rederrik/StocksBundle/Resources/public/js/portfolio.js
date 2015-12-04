@@ -43,7 +43,7 @@ $(function(){
     };
 
     var loadGraph = function(data) {
-        if(data.result == undefined) {
+        if(data.result == undefined || data.result.labels.length == 0) {
             return;
         }
         var $graph = $("#graph");
