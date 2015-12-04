@@ -9,7 +9,7 @@ User can also see how his portfolio would perform over the last two years. Histo
 Front-end is built using JQuery and Semantic UI and relies on AJAX to communicate with back-end.
 
 It took me about 4 hours to make the user interface part, ~3 hours for portfolio CRUD, 
-~4,5 hours for historical data. 
+~5,5 hours for historical data. 
 
 ## Installation
 ```bash
