@@ -123,7 +123,7 @@ class StockProvider
             $last = $rep->findLastStockHistory($stock);
             if (!$last instanceof StockHistory) {
                 $stocksToUpdate[$stock->getSymbol()] = $startDate;
-            } elseif ($last->getDate()->diff(new \DateTime())->days > 1) {
+            } elseif ($last->getDate()->diff(new \DateTime('yesterday', new \DateTimeZone('America/New_York')))->days > 0) {
                 $lastDate = $last->getDate();
                 $stocksToUpdate[$stock->getSymbol()] = $last->getDate()->modify('1 day');
                 if ($startDate > $lastDate) {

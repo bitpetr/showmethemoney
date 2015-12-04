@@ -66,7 +66,7 @@ class FinanceApiClient
      */
     public function getHistory(array $stocksToUpdate)
     {
-        $yesterday = new \DateTime('yesterday');
+        $yesterday = new \DateTime('yesterday', new \DateTimeZone('America/New_York'));
 
         $startDate = min($stocksToUpdate); //Gotta know the earliest date
 
@@ -93,6 +93,10 @@ class FinanceApiClient
                 } else {
                     $stocksToFetch[$symbol] = ['start' => $startDate, 'end' => $endDate];
                 }
+            }
+
+            if(!$stocksToFetch) {
+                continue; //wtf but ok
             }
 
             if ($startDate->diff($endDate)->days*count($stocksToFetch) > $this->maxDays) {
@@ -141,6 +145,9 @@ class FinanceApiClient
      */
     public function getMultiHistoricalData(array $stocksToFetch)
     {
+        if(empty($stocksToFetch)) {
+            throw new \Exception('Empty array passed as argument');
+        }
         $clauseString = "(startDate='%s' and endDate='%s' and symbol = '%s')";
         $clause = [];
         foreach ($stocksToFetch as $symbol => $dates) {
