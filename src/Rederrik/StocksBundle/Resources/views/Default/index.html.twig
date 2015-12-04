@@ -1,0 +1,36 @@
+{% extends '@RederrikStocks/base.html.twig' %}
+{% block style %}
+    <style>
+    </style>
+{% endblock %}
+{% block content %}
+    {% if is_granted('ROLE_USER') %}
+        <div class="row">
+            <div id="portfolio-container" class="column">
+                {{ render_hinclude(url('portfolio_table')) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <div id="graph-container" class="ui loading segment">
+                    <h4>2 year performance chart</h4>
+                    <div class="ui divider"></div>
+                    <div><canvas id="graph" width="400" height="400"></canvas></div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="ui huge message page grid center aligned">
+                <h1 class="ui huge header">SHOWMETHEMONEY</h1>
+                <p>
+                    Your ultimate application to track your stock performance has arrived!
+                </p>
+                <a href="{{ url('fos_user_security_login') }}" class="ui green button">Sign up now</a>
+            </div>
+        </div>
+    {% endif %}
+    <div class="ui divider"></div>
+    <div class="row"></div>
+{% endblock %}
+
