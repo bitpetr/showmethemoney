@@ -20,7 +20,7 @@
         <div class="row">
             <div class="column">
                 <nav class="ui text menu">
-                    <a href="/" class="header item">Showmethemoney</a>
+                    <a href="{{url('index')}}" class="header item">Showmethemoney</a>
                     <div class="right menu">
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                             <div class="item">{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</div>
