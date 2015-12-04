@@ -20,6 +20,8 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * Portfolio is a collection of Stocks the user is tracking
+     *
      * @ORM\ManyToMany(targetEntity="Stock", indexBy="symbol")
      * @ORM\JoinTable(name="portfolio")
      */

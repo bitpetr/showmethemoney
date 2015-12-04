@@ -8,15 +8,43 @@
 namespace Rederrik\StocksBundle\Model;
 
 
+/**
+ * Class FinanceApiClient
+ * Used to fetch data from Yahoo finance API
+ * @package Rederrik\StocksBundle\Model
+ */
 class FinanceApiClient
 {
 
+    /**
+     * Additional parameters for API query
+     *
+     * @var array
+     */
     private $params = [
         'env' => "http://datatables.org/alltables.env",
         'format' => "json"
     ];
+
+    /**
+     * Connection timeout in seconds
+     * @var int
+     */
     private $timeout = 10;
 
+    /**
+     * Maximum days to split queries
+     * @var int
+     */
+    private $maxDays = 200;
+
+    /**
+     * Gets quotes data by their symbols
+     *
+     * @param array|string $symbols one or more symbols to look for
+     * @return array [quote[]]
+     * @throws \Exception on failed query
+     */
     public function getQuotes($symbols)
     {
         if (is_string($symbols)) {
@@ -30,62 +58,108 @@ class FinanceApiClient
     }
 
 
+    /**
+     * Gets historical data for each quote by their symbols
+     *
+     * @param array $stocksToUpdate [symbol => start_date]
+     * @return array [symbol => [date => price]]
+     */
     public function getHistory(array $stocksToUpdate)
     {
         $yesterday = new \DateTime('yesterday');
 
-        $startDate = min($stocksToUpdate);
+        $startDate = min($stocksToUpdate); //Gotta know the earliest date
 
         $data = [];
+        /* We gonna be effective. There is no data on Yahoo API max results, but we assume it's around ~170,
+           so we gonna split big intervals into smaller ones. For multiple quotes we gonna check their start dates and
+           only query the data we really need.
+        */
         do {
-            $enddate = clone $startDate;
-            if (($days = $startDate->diff($yesterday)->days) > 200) {
-                $enddate->modify('200 days');
+            $endDate = clone $startDate;
+            if (($days = $startDate->diff($yesterday)->days) > $this->maxDays) {
+                //Too many days - split! Btw, trades only happen on workdays so we take 200 calendar days
+                $endDate->modify($this->maxDays.' days');
             } else {
-                $enddate = $yesterday;
+                $endDate = $yesterday; //Time to finish this
             }
 
-            if ($days*count($stocksToUpdate) > 200) {
-                foreach ($stocksToUpdate as $symbol => $date) {
-                    if($date > $enddate) {
-                        continue;
-                    } elseif($date < $enddate && $date > $startDate) {
-                        $res = $this->getHistoricalData([$symbol], $date, $enddate);
-                    } else {
-                        $res = $this->getHistoricalData([$symbol], $startDate, $enddate);
-                    }
-                    foreach ($res as $row) {
+            $stocksToFetch = [];
+            foreach ($stocksToUpdate as $symbol => $date) { //Optimizing query data
+                if($date > $endDate) {
+                    continue; //Too early for this one
+                } elseif($date < $endDate && $date > $startDate) {
+                    $stocksToFetch[$symbol] = ['start' => $date, 'end' => $endDate]; //A little bit too early
+                } else {
+                    $stocksToFetch[$symbol] = ['start' => $startDate, 'end' => $endDate];
+                }
+            }
+
+            if ($days*count($stocksToFetch) > $this->maxDays) {
+                foreach ($stocksToFetch as $symbol => $dates) { //Too many queries - one query for each stock
+                    $res = $this->getHistoricalData([$symbol], $dates['start'], $dates['end']);
+                    foreach ($res as $row) { //Format
                         $data[$row['Symbol']][$row['Date']] = $row['Close'];
                     }
                 }
             } else {
-                $res = $this->getHistoricalData(array_keys($stocksToUpdate), $startDate, $enddate);
+                $res = $this->getMultiHistoricalData($stocksToFetch);
                 foreach ($res as $row) {
                     $data[$row['Symbol']][$row['Date']] = $row['Close'];
                 }
             }
-            $startDate->modify('200 days');
-        } while($enddate != $yesterday);
+            $startDate->modify($this->maxDays.' days'); //Next 200 days
+        } while($endDate != $yesterday); //Until yesterday
 
         return $data;
     }
 
     /**
-     * @param $stocksToUpdate
+     * Gets history for one stock
+     *
+     * @param string $stockToFetch symbol
      * @param \DateTime $startDate
      * @param $endDate
-     * @return mixed
+     * @return array
      * @throws \Exception
      */
-    public function getHistoricalData(array $stocksToUpdate, \DateTime $startDate, \DateTime $endDate)
+    public function getHistoricalData($stockToFetch, \DateTime $startDate, \DateTime $endDate)
     {
-        $query = sprintf("select * from yahoo.finance.historicaldata where startDate='%s' and endDate='%s' and symbol in ('%s')",
-            $startDate->format("Y-m-d"), $endDate->format("Y-m-d"), implode("','", $stocksToUpdate));
+        $query = sprintf("select * from yahoo.finance.historicaldata where startDate='%s' and endDate='%s' and symbol = '%s'",
+            $startDate->format("Y-m-d"), $endDate->format("Y-m-d"), $stockToFetch);
         $result = $this->execQuery($query);
 
         return $result['quote'];
     }
 
+    /**
+     * Gets history for multiple stocks
+     *
+     * @param array $stocksToFetch [symbol => [start=>date,end=>date]]
+     * @return array
+     * @throws \Exception
+     */
+    public function getMultiHistoricalData(array $stocksToFetch)
+    {
+        $clauseString = "(startDate='%s' and endDate='%s' and symbol = '%s')";
+        $clause = [];
+        foreach ($stocksToFetch as $symbol => $dates) {
+            $clause[] = sprintf($clauseString, $dates['start'], $dates['end'], $symbol);
+        }
+        $query = "select * from yahoo.finance.historicaldata where ".implode(' or ',$clause);
+        $result = $this->execQuery($query);
+
+        return $result['quote'];
+    }
+
+    /**
+     * Executes HTTP query using cURL
+     *
+     * @param $query
+     * @param null $baseUrl
+     * @return mixed
+     * @throws \Exception
+     */
     private function execQuery($query, $baseUrl = null)
     {
         if (!$baseUrl) {
@@ -105,15 +179,15 @@ class FinanceApiClient
         $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($httpStatus !== 200) {
-            throw new \Exception("HTTP call failed with error ".curl_error($ch).".");
+            throw new \Exception('HTTP call failed with error '.curl_error($ch).'.');
         } elseif ($response === false) {
-            throw new \Exception("HTTP call failed empty response.");
+            throw new \Exception('HTTP call failed empty response.');
         }
 
         $decoded = json_decode($response, true);
         if (!isset($decoded['query']['results'])) {
             dump($decoded);
-            throw new \Exception("Yahoo Finance API did not return a result.");
+            throw new \Exception('Yahoo Finance API did not return a result.');
         }
         return $decoded['query']['results'];
 

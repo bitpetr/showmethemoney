@@ -2,11 +2,13 @@
 
 namespace Rederrik\StocksBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Stock
+ * Used to cache data from API and to store user portfolio relations
  *
  * @ORM\Table(name="stock")
  * @ORM\Entity(repositoryClass="Rederrik\StocksBundle\Repository\StockRepository")
@@ -48,6 +50,8 @@ class Stock
     private $lastTradePrice;
 
     /**
+     * Last trade change in percent
+     *
      * @var string
      *
      * @ORM\Column(type="string")
@@ -56,6 +60,8 @@ class Stock
     private $changeInPercent;
 
     /**
+     * Exchange name
+     *
      * @var string
      *
      * @ORM\Column(type="string", length=3)
@@ -64,7 +70,9 @@ class Stock
     private $stockExchange;
 
     /**
-     * @var string
+     * Last time data was updated from API
+     *
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      * @Groups({"attributes"})
@@ -82,6 +90,7 @@ class Stock
     public function __construct()
     {
         $this->lastUpdate = new \DateTime();
+        $this->history = new ArrayCollection();
     }
 
     /**
