@@ -61,6 +61,9 @@ $(function(){
         } else {
             $container.transition('show');
         }
+        if(typeof portfolioChart !== 'undefined'){
+            portfolioChart.destroy();
+        }
         var $graph = $("#graph");
         var width = $graph.parent().attr('width');
         var ctx = $graph.get(0).getContext("2d");
@@ -70,10 +73,11 @@ $(function(){
         data.result.datasets[0].pointStrokeColor = "#fff";
         data.result.datasets[0].pointHighlightFill = "#fff";
         data.result.datasets[0].pointHighlightStroke = "rgba(151,187,205,1)";
-        var graph = new Chart(ctx).Line(data.result, {
+        portfolioChart = new Chart(ctx).Line(data.result, {
             responsive: true,
             tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %> USD"
         });
+
         $container.removeClass('loading');
     };
 
