@@ -29,12 +29,8 @@ class PortfolioController extends Controller
      */
     public function portfolioTableAction()
     {
-        $user = $user = $this->getUser();
-        if (!$user instanceof User) { //do the correct user?
-            throw $this->createAccessDeniedException();
-        }
+        $portfolio = $this->getStocksPortfolio()->toArray();
 
-        $portfolio = $user->getPortfolio()->toArray(); //association is indexed, so keys are stock symbols
         //using service to fetch fresh data
         $portfolio = $this->get('rederrik_stocks.stock_provider')->getStock(array_keys($portfolio));
         return $this->render(
@@ -52,13 +48,10 @@ class PortfolioController extends Controller
     {
         $symbol = $request->request->get('symbol');
         if (!$symbol || strlen($symbol) > 10) {
-           return new JsonResponse(['error' => 'Wrong quote symbol'], 400);
+           return new JsonResponse(['error' => 'Wrong quote symbol']);
         }
 
-        $user = $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
-        }
+        $portfolio = $this->getStocksPortfolio();
 
         //fetch fresh stock info using service
         $stocks = $this->get('rederrik_stocks.stock_provider')->getStock(strtoupper($symbol));
@@ -67,13 +60,11 @@ class PortfolioController extends Controller
             return new JsonResponse(['error' => 'Stock not found.']);
         }
 
-        $portfolio = $user->getPortfolio();
         $stock = array_pop($stocks); //always an array, but we only use one value
         if ($portfolio->contains($stock)) {
             return new JsonResponse(['error' => 'Stock already added to your portfolio.']);
         }
-        $user->addToPortfolio($stock);
-
+        $portfolio->add($stock);
         $this->getDoctrine()->getManager()->flush();
 
         $result = $this->get('serializer')->serialize(
@@ -92,10 +83,8 @@ class PortfolioController extends Controller
      */
     public function removeStockByIdAction(Request $request)
     {
-        $user = $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
-        }
+        $portfolio = $this->getStocksPortfolio();
+
         $id = $request->request->get('id');
 
         $em = $this->getDoctrine()->getManager();
@@ -104,7 +93,6 @@ class PortfolioController extends Controller
             return new JsonResponse(['error' => 'Stock not found.']);
         }
 
-        $portfolio = $user->getPortfolio();
         if (!$portfolio->removeElement($stock)) {
             return new JsonResponse(['error' => 'Stock not found in your portfolio.']);
         }
@@ -119,12 +107,7 @@ class PortfolioController extends Controller
      */
     public function portfolioGraphDataAction()
     {
-        $user = $user = $this->getUser();
-        if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $portfolio = $user->getPortfolio();
+        $portfolio = $this->getStocksPortfolio();
 
         $stocksHistory = $this->get('rederrik_stocks.stock_provider')->getStockHistory($portfolio, 'M Y');
 
@@ -134,5 +117,19 @@ class PortfolioController extends Controller
         ];
 
         return new JsonResponse(['result' => $chartData]);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    private function getStocksPortfolio()
+    {
+        $user = $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $portfolio = $user->getPortfolio();
+        return $portfolio;
     }
 }
