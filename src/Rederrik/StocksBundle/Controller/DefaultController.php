@@ -9,7 +9,7 @@ class DefaultController extends Controller
 {
     /**
      * Index page
-     * @Route("/")
+     * @Route(path="/", methods={"GET"})
      */
     public function indexAction()
     {

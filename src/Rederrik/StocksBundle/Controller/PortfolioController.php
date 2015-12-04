@@ -24,7 +24,7 @@ class PortfolioController extends Controller
     /**
      * Renders portfolio table
      *
-     * @Route(name="portfolio_table", path="/portfolio/table", options={"expose"=true})
+     * @Route(name="portfolio_table", path="/portfolio/table", methods={"GET"}, options={"expose"=true})
      * @return Response
      */
     public function portfolioTableAction()
