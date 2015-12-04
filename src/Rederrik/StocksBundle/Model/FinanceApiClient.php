@@ -187,7 +187,6 @@ class FinanceApiClient
 
         $decoded = json_decode($response, true);
         if (!isset($decoded['query']['results'])) {
-            dump($decoded);
             throw new \Exception('Yahoo Finance API did not return a result.');
         }
         return $decoded['query']['results'];
