@@ -5,7 +5,7 @@
  * Time: 16:30
  */
 
-namespace AppBundle\Model;
+namespace AppBundle\Service;
 
 
 /**

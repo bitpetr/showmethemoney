@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use AppBundle\Entity\Stock;
 use AppBundle\Entity\StockHistory;
-use AppBundle\Model\FinanceApiClient;
 
 /**
  * Class StockInfoProvider
