@@ -8,7 +8,7 @@
         <title>SMTM - {% block title %}That's all you need!{% endblock%}</title>
 
         {% stylesheets filter="cssrewrite"
-            'bundles/rederrikstocks/thirdparty/semantic-ui/semantic.min.css'
+            'bundles/app/thirdparty/semantic-ui/semantic.min.css'
         %}
             <link href="{{ asset_url }}" type="text/css" rel="stylesheet" media="screen" />
         {% endstylesheets %}
@@ -41,10 +41,10 @@
 
     {% javascripts
     'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'
-    '@RederrikStocksBundle/Resources/public/thirdparty/semantic-ui/semantic.min.js'
+    '@AppBundle/Resources/public/thirdparty/semantic-ui/semantic.min.js'
     'https://cdnjs.cloudflare.com/ajax/libs/hinclude/0.9.5/hinclude.min.js'
     'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'
-    '@RederrikStocksBundle/Resources/public/js/portfolio.js'
+    '@AppBundle/Resources/public/js/portfolio.js'
     'bundles/fosjsrouting/js/router.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

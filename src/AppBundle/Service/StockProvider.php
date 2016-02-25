@@ -5,18 +5,18 @@
  * Time: 10:41
  */
 
-namespace Rederrik\StocksBundle\Service;
+namespace AppBundle\Service;
 
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
-use Rederrik\StocksBundle\Entity\Stock;
-use Rederrik\StocksBundle\Entity\StockHistory;
-use Rederrik\StocksBundle\Model\FinanceApiClient;
+use AppBundle\Entity\Stock;
+use AppBundle\Entity\StockHistory;
+use AppBundle\Model\FinanceApiClient;
 
 /**
  * Class StockInfoProvider
- * @package Rederrik\StocksBundle\Service
+ * @package AppBundle\Service
  */
 class StockProvider
 {
@@ -60,7 +60,7 @@ class StockProvider
             $symbols = [$symbols];
         }
         /** @var Stock[] $storedStocks */
-        $storedStocks = $this->em->getRepository('RederrikStocksBundle:Stock')->findBySymbol($symbols);
+        $storedStocks = $this->em->getRepository('AppBundle:Stock')->findBySymbol($symbols);
 
         $resultStocks = $stocksToUpdate = $quotes = [];
         foreach ($symbols as $symbol) {
@@ -113,11 +113,11 @@ class StockProvider
      * Gets historical data for quotes
      *
      * @param PersistentCollection $portfolio
-     * @return \Rederrik\StocksBundle\Entity\StockHistory[]
+     * @return \AppBundle\Entity\StockHistory[]
      */
     public function getStockHistory($portfolio, $dateFormat = 'Y-m-d')
     {
-        $rep = $this->em->getRepository('RederrikStocksBundle:StockHistory');
+        $rep = $this->em->getRepository('AppBundle:StockHistory');
         $startDate = new \DateTime('2013-12-01');
         foreach ($portfolio as $stock) {
             $last = $rep->findLastStockHistory($stock);
@@ -145,12 +145,12 @@ class StockProvider
                     $this->em->persist($stockHistory);
                     if(++$counter % 50 === 0) {
                         $this->em->flush();
-                        $this->em->clear('RederrikStocksBundle:StockHistory');
+                        $this->em->clear('AppBundle:StockHistory');
                     }
                 }
             }
             $this->em->flush();
-            $this->em->clear('RederrikStocksBundle:StockHistory');
+            $this->em->clear('AppBundle:StockHistory');
         }
 
         $history = [];

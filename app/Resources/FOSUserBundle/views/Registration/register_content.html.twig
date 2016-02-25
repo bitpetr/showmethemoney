@@ -1,6 +1,6 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{% form_theme form 'RederrikStocksBundle:Form:sematic_ui_form_fields.html.twig' %}
+{% form_theme form 'AppBundle:Form:sematic_ui_form_fields.html.twig' %}
 {% if form.vars.valid %} {% set form_class = 'ui form' %} {% else  %} {% set form_class = 'ui form error' %} {% endif %}
 
     {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'),

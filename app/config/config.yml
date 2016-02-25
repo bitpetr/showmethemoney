@@ -16,7 +16,7 @@ framework:
     serializer:      { enable_annotations: true }
     templating:
         engines: ['twig']
-        hinclude_default_template: "RederrikStocksBundle::hinclude.html.twig"
+        hinclude_default_template: "AppBundle::hinclude.html.twig"
        #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
@@ -61,9 +61,12 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: Rederrik\StocksBundle\Entity\User
+    user_class: AppBundle\Entity\User
+services: #temp fix for alias factory bug
+    fos_user.doctrine_registry:
+        alias: doctrine
 
 assetic:
-    bundles: [ RederrikStocksBundle] # Add the bunde
+    bundles: [ AppBundle] # Add the bunde
     filters:
         cssrewrite: ~

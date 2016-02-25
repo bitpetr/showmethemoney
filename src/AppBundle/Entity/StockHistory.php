@@ -1,6 +1,6 @@
 <?php
 
-namespace Rederrik\StocksBundle\Entity;
+namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * StockHistory
  *
  * @ORM\Table(name="stock_history")
- * @ORM\Entity(repositoryClass="Rederrik\StocksBundle\Repository\StockHistoryRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\StockHistoryRepository")
  */
 class StockHistory
 {

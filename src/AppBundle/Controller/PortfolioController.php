@@ -5,9 +5,9 @@
  * Time: 10:41
  */
 
-namespace Rederrik\StocksBundle\Controller;
+namespace AppBundle\Controller;
 
-use Rederrik\StocksBundle\Entity\User;
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class PortfolioController
- * @package Rederrik\StocksBundle\Controller
+ * @package AppBundle\Controller
  */
 class PortfolioController extends Controller
 {
@@ -32,9 +32,9 @@ class PortfolioController extends Controller
         $portfolio = $this->getStocksPortfolio()->toArray();
 
         //using service to fetch fresh data
-        $portfolio = $this->get('rederrik_stocks.stock_provider')->getStock(array_keys($portfolio));
+        $portfolio = $this->get('app.stock_provider')->getStock(array_keys($portfolio));
         return $this->render(
-            'RederrikStocksBundle:Portfolio:table.html.twig', ['quotes' => $portfolio]
+            'AppBundle:Portfolio:table.html.twig', ['quotes' => $portfolio]
         );
     }
 
@@ -54,7 +54,7 @@ class PortfolioController extends Controller
         $portfolio = $this->getStocksPortfolio();
 
         //fetch fresh stock info using service
-        $stocks = $this->get('rederrik_stocks.stock_provider')->getStock(strtoupper($symbol));
+        $stocks = $this->get('app.stock_provider')->getStock(strtoupper($symbol));
 
         if (empty($stocks)) {
             return new JsonResponse(['error' => 'Stock not found.']);
@@ -88,7 +88,7 @@ class PortfolioController extends Controller
         $id = $request->request->get('id');
 
         $em = $this->getDoctrine()->getManager();
-        $stock = $em->find('RederrikStocksBundle:Stock', $id);
+        $stock = $em->find('AppBundle:Stock', $id);
         if (!$stock) {
             return new JsonResponse(['error' => 'Stock not found.']);
         }
@@ -109,7 +109,7 @@ class PortfolioController extends Controller
     {
         $portfolio = $this->getStocksPortfolio();
 
-        $stocksHistory = $this->get('rederrik_stocks.stock_provider')->getStockHistory($portfolio, 'M Y');
+        $stocksHistory = $this->get('app.stock_provider')->getStockHistory($portfolio, 'M Y');
 
         $chartData = [
             'labels' => array_keys($stocksHistory),

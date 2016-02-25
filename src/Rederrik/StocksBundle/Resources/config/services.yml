@@ -1,7 +1,0 @@
-services:
-#    rederrik_stocks.example:
-#        class: Rederrik\StocksBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
-  rederrik_stocks.stock_provider:
-      class: Rederrik\StocksBundle\Service\StockProvider
-      arguments: [ @doctrine.orm.entity_manager ]

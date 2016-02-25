@@ -1,6 +1,6 @@
 <?php
 
-namespace Rederrik\StocksBundle\Entity;
+namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Used to cache data from API and to store user portfolio relations
  *
  * @ORM\Table(name="stock")
- * @ORM\Entity(repositoryClass="Rederrik\StocksBundle\Repository\StockRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\StockRepository")
  */
 class Stock
 {

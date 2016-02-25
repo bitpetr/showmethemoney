@@ -5,13 +5,13 @@
  * Time: 16:30
  */
 
-namespace Rederrik\StocksBundle\Model;
+namespace AppBundle\Model;
 
 
 /**
  * Class FinanceApiClient
  * Used to fetch data from Yahoo finance API
- * @package Rederrik\StocksBundle\Model
+ * @package AppBundle\Model
  */
 class FinanceApiClient
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rederrik\StocksBundle\Repository;
+namespace AppBundle\Repository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 

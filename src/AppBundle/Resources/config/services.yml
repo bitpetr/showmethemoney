@@ -1,0 +1,7 @@
+services:
+#    app.example:
+#        class: AppBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+  app.stock_provider:
+      class: AppBundle\Service\StockProvider
+      arguments: [ @doctrine.orm.entity_manager ]

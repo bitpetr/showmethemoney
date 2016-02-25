@@ -1,10 +1,10 @@
 <?php
 
-namespace Rederrik\StocksBundle\Repository;
+namespace AppBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
-use Rederrik\StocksBundle\Entity\Stock;
-use Rederrik\StocksBundle\Entity\StockHistory;
+use AppBundle\Entity\Stock;
+use AppBundle\Entity\StockHistory;
 
 /**
  * StockHistoryRepository
@@ -42,7 +42,7 @@ class StockHistoryRepository extends EntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('h.date','sum(h.closePrice) AS total')
-            ->from('RederrikStocksBundle:StockHistory', 'h')
+            ->from('AppBundle:StockHistory', 'h')
             ->where('h.stock in (:portfolio)')
             ->setParameter('portfolio', $portfolio->getValues())
             ->addGroupBy('h.date')

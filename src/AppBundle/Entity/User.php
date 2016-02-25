@@ -1,5 +1,5 @@
 <?php
-namespace Rederrik\StocksBundle\Entity;
+namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -70,11 +70,11 @@ class User extends BaseUser
     /**
      * Add portfolio
      *
-     * @param \Rederrik\StocksBundle\Entity\Stock $portfolio
+     * @param \AppBundle\Entity\Stock $portfolio
      *
      * @return User
      */
-    public function addPortfolio(\Rederrik\StocksBundle\Entity\Stock $portfolio)
+    public function addPortfolio(\AppBundle\Entity\Stock $portfolio)
     {
         $this->portfolio[] = $portfolio;
 
@@ -84,9 +84,9 @@ class User extends BaseUser
     /**
      * Remove portfolio
      *
-     * @param \Rederrik\StocksBundle\Entity\Stock $portfolio
+     * @param \AppBundle\Entity\Stock $portfolio
      */
-    public function removePortfolio(\Rederrik\StocksBundle\Entity\Stock $portfolio)
+    public function removePortfolio(\AppBundle\Entity\Stock $portfolio)
     {
         $this->portfolio->removeElement($portfolio);
     }

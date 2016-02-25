@@ -19,7 +19,7 @@ class AppKernel extends Kernel
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new FOS\UserBundle\FOSUserBundle(),
 
-            new Rederrik\StocksBundle\RederrikStocksBundle(),
+            new AppBundle\AppBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
