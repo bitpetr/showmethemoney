@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Stock
  * Used to cache data from API and to store user portfolio relations
  *
- * @ORM\Table(name="stock")
+ * @ORM\Table(name="stocks")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StockRepository")
  */
 class Stock

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * StockHistory
  *
- * @ORM\Table(name="stock_history")
+ * @ORM\Table(name="stocks_history")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\StockHistoryRepository")
  */
 class StockHistory
